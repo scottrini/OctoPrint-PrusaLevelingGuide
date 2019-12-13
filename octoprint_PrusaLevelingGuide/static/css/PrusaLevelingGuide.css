@@ -1,0 +1,65 @@
+#tab_plugin_PrusaLevelingGuide .variance_container {
+  float: right;
+  text-align: center;
+  padding-right: 20px;
+  padding-top: 5px;
+}
+#tab_plugin_PrusaLevelingGuide #viewType {
+  margin: 10px;
+  width: 125px;
+}
+#tab_plugin_PrusaLevelingGuide #tableView td {
+  text-align: center;
+}
+#tab_plugin_PrusaLevelingGuide #tableView .bedvalue {
+  width: 60px;
+}
+#tab_plugin_PrusaLevelingGuide #realView #photo_heatbed {
+  background: url(/plugin/PrusaLevelingGuide/static/img/photo_heatbed.png);
+  background-repeat: no-repeat;
+  height: 455px;
+  padding-bottom: 15px;
+  background-position: center;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue {
+  width: 50px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-container {
+  position: relative;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-0-container {
+  top: 53px;
+  left: 90px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-1-container {
+  top: 53px;
+  left: 155px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-2-container {
+  top: 53px;
+  left: 220px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-3-container {
+  top: 208px;
+  left: -205px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-4-container {
+  top: 208px;
+  left: -131px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-5-container {
+  top: 208px;
+  left: -58px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-6-container {
+  top: 354px;
+  left: 62px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-7-container {
+  top: 354px;
+  left: 154px;
+}
+#tab_plugin_PrusaLevelingGuide #realView .bedvalue-8-container {
+  top: 354px;
+  left: 233px;
+}

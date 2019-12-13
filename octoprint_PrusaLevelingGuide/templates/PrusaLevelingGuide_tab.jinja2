@@ -1,0 +1,166 @@
+<h2>Prusa Leveling Guide</h2>
+
+<p>This process is based on <a href="https://github.com/PrusaOwners/prusaowners/wiki/Bed_Leveling_without_Wave_Springs">this guide</a>.  Please be familiar before using this tool.  Once ready to begin refining your bed variance, click Begin Adjustment</p>
+
+<form class="form-horizontal">
+	
+	<div class="control-group">
+		<div class="controls">
+		  <label class="checkbox">
+		    <input type="checkbox" data-bind="checked: enablePreheat, disable: isRunning" id="enablePreheat"> Preheat using profile
+		  </label>
+		</div>
+	</div>
+
+	<div class="control-group">
+	    <label class="control-label" for="availableProfiles">Profile</label>
+	    <div class="controls">
+	       <select id="availableProfiles" data-bind="enable: $root.enablePreheat() && !$root.isRunning(), options: availableProfiles, optionsText: function(item) {
+	                 	  return item.name + ' (' + item.extruder + '/' + item.bed + ')'
+	               		},
+	               		optionsValue: function (item) { return item.name },
+	                   value: selectedProfile"></select>
+	    </div>
+	</div>
+	
+	<button class="btn btn-block control-box" data-bind="enable: controlViewModel.isOperational() && !controlViewModel.isPrinting() && loginStateViewModel.isUser() && !$root.isRunning(), click: function() { $root.beginAdjustment() }">Begin Adjusting</button>
+	
+	<h3 align="center"><strong data-bind="text: currentStatus"></strong></h3>
+	<div class="btn-toolbar pull-left">
+	  <div class="btn-group"> 
+	    <a class="btn" data-bind="click: $root.switchToTable(), css: { 'btn-primary': viewType() == 'table' }"><i class="fa fa-table"></i></a>
+	    <a class="btn" data-bind="click: $root.switchToReal(), css: { 'btn-primary': viewType() == 'real' }"><i class="fa fa-bed"></i></a>
+	  </div>
+	</div>
+	<div class="btn-toolbar pull-right">
+	  <div class="btn-group">
+	    <button class="btn" id="refreshBtn" data-bind="enable: !$root.isPaused() && !$root.isRunning(), click: function() { $root.refreshFromAPI() }"><i class="fa fa-repeat"></i></button>
+	  </div>
+	</div>
+	<div class="variance_container">
+		<div class="variance">Bed variance: <strong data-bind="text: bedVariance"></strong></div>
+		<div><small>Last updated: <strong data-bind="text: lastUpdated"></strong></small></div>
+	</div>
+	
+	
+	
+	
+	<select id="viewType" data-bind="value: selectedView">
+		<option value="raw">Raw Values</option>
+		<option value="degrees">Degrees</option>
+		<option value="decimal">Decimal Turns</option>
+		<option value="fraction">Fraction Turns</option>
+	</select>
+	<div id="tableView" data-bind="visible: viewType() == 'table'">
+		<table class="table" id="bedvalues">
+			<tr>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-0-direction fa fa-redo"></i></span>
+				      <input type="text" data-bind="value: bedValues()[0]" readonly class="bedvalue bedvalue-0" />
+				    </div>
+				</td>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-1-direction fa fa-redo"></i></span>
+				      <input type="text" data-bind="value: bedValues()[1]" readonly class="bedvalue bedvalue-1" />
+				    </div>
+				</td>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-2-direction fa fa-redo"></i></span>
+				      <input type="text" data-bind="value: bedValues()[2]" readonly class="bedvalue bedvalue-2" />
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-3-direction fa fa-redo"></i></span>
+				      <input type="text" data-bind="value: bedValues()[3]" readonly class="bedvalue bedvalue-3" />
+				    </div>
+				</td>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-4-direction fa fa-bullseye"></i></span>
+				      <input type="text" data-bind="value: bedValues()[4]" readonly class="bedvalue bedvalue-4" />
+				    </div>
+				</td>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-5-direction fa fa-redo"></i></span>
+				      <input type="text" data-bind="value: bedValues()[5]" readonly class="bedvalue bedvalue-5" />
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-6-direction fa fa-redo"></i></span>
+				      <input type="text" data-bind="value: bedValues()[6]" readonly class="bedvalue bedvalue-6" />
+				    </div>
+				</td>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-7-direction fa fa-redo"></i></span>
+				      <input type="text" data-bind="value: bedValues()[7]" readonly class="bedvalue bedvalue-7" />
+				    </div>
+				</td>
+				<td>
+					<div class="input-prepend">
+				      <span class="add-on"><i class="bedvalue-8-direction fa fa-redo"></i></span>
+				      <input type="text" data-bind="value: bedValues()[8]" readonly class="bedvalue bedvalue-8" />
+				    </div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="realView" data-bind="visible: viewType() == 'real'">
+		<div id="photo_heatbed">
+			<div class="input-prepend bedvalue-container bedvalue-0-container">
+		      <span class="add-on"><i class="bedvalue-0-direction fa fa-redo"></i></span>
+		      <input type="text" data-bind="value: bedValues()[0]" readonly class="bedvalue bedvalue-0" />
+		    </div>
+		    <div class="input-prepend bedvalue-container bedvalue-1-container">
+		      <span class="add-on"><i class="bedvalue-1-direction fa fa-redo"></i></span>
+		      <input type="text" data-bind="value: bedValues()[1]" readonly class="bedvalue bedvalue-1" />
+		    </div>
+		    <div class="input-prepend bedvalue-container bedvalue-2-container">
+		      <span class="add-on"><i class="bedvalue-2-direction fa fa-redo"></i></span>
+		      <input type="text" data-bind="value: bedValues()[2]" readonly class="bedvalue bedvalue-2" />
+		    </div>
+		    <div class="input-prepend bedvalue-container bedvalue-3-container">
+		      <span class="add-on"><i class="bedvalue-3-direction fa fa-redo"></i></span>
+		      <input type="text" data-bind="value: bedValues()[3]" readonly class="bedvalue bedvalue-3" />
+		    </div>
+		    <div class="input-prepend bedvalue-container bedvalue-4-container">
+		      <span class="add-on"><i class="bedvalue-4-direction fa fa-bullseye"></i></span>
+		      <input type="text" data-bind="value: bedValues()[4]" readonly class="bedvalue bedvalue-4" />
+		    </div>
+		    <div class="input-prepend bedvalue-container bedvalue-5-container">
+		      <span class="add-on"><i class="bedvalue-5-direction fa fa-redo"></i></span>
+		      <input type="text" data-bind="value: bedValues()[5]" readonly class="bedvalue bedvalue-5" />
+		    </div>
+		    <div class="input-prepend bedvalue-container bedvalue-6-container">
+		      <span class="add-on"><i class="bedvalue-6-direction fa fa-redo"></i></span>
+		      <input type="text" data-bind="value: bedValues()[6]" readonly class="bedvalue bedvalue-6" />
+		    </div>
+		    <div class="input-prepend bedvalue-container bedvalue-7-container">
+		      <span class="add-on"><i class="bedvalue-7-direction fa fa-redo"></i></span>
+		      <input type="text" data-bind="value: bedValues()[7]" readonly class="bedvalue bedvalue-7" />
+		    </div>
+		    <div class="input-prepend bedvalue-container bedvalue-8-container">
+		      <span class="add-on"><i class="bedvalue-8-direction fa fa-redo"></i></span>
+		      <input type="text" data-bind="value: bedValues()[8]" readonly class="bedvalue bedvalue-8" />
+		    </div>
+			
+		</div>
+	</div>
+	
+
+                       
+    <div class="control-group">
+    	<button class="btn btn-block btn-primary" data-bind="enable: isPaused, click: function() { $root.sendLevelCommand() }">Continue <i class="fa fa-angle-double-right"></i></button>
+		<button class="btn btn-block btn-success" data-bind="enable: isPaused, click: function() { $root.finishedLeveling() }">Finished <i class="fa fa-check"></i></button>
+    </div>
+</form>
