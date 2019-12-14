@@ -200,30 +200,30 @@ $(function() {
 					continue;
 				}
 				// remove the icons at first
-				$('.bedvalue-' + i + '-direction').removeClass('fa-redo').removeClass('fa-undo');
+				$('.bedvalue-' + i + '-direction').removeClass('fa-repeat').removeClass('fa-undo');
 				
 				// determine which view we are using, calculate our value
 				// set our appropriate icon, then add it to the array to update the DOM
 				if (self.selectedView() == "degrees") {
 					var value = self.convertToDegrees(data.values[i]);
-					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-redo');
+					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
 
 					newBedValues.push(Math.abs(value)  + '°');
 				}
 				else if (self.selectedView() == "decimal") {
 					
 					var value = self.convertToDecimalTurns(data.values[i]);
-					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-redo');
+					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
 					newBedValues.push(Math.abs(value));
 				}
 				else if (self.selectedView() == "fraction") {
 					var value = self.convertToDecimalTurns(data.values[i]);
-					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-redo');
+					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
 					var fraction = decimalToFraction(value);
 					newBedValues.push(Math.abs(fraction.top) + '/' + fraction.bottom);
 				}
 				else {
-					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-redo');
+					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
 					newBedValues.push(data.values[i]);
 				}
 				
