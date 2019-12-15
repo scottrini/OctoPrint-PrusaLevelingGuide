@@ -169,7 +169,15 @@ $(function() {
 			return degrees;
 		}
 		
-		
+		self.updateBedValueDirection = function (point, value) {
+			if (value == 0) {
+				$('.bedvalue-' + point + '-direction').addClass('fa-bullseye');
+			}
+			else {
+				$('.bedvalue-' + point + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
+			}
+		}
+
 		// Update the DOM with bed values from the API
 		self.updateBedValues = function () {
 			
@@ -200,30 +208,28 @@ $(function() {
 					continue;
 				}
 				// remove the icons at first
-				$('.bedvalue-' + i + '-direction').removeClass('fa-repeat').removeClass('fa-undo');
+				$('.bedvalue-' + i + '-direction').removeClass('fa-repeat fa-undo fa-bullseye');
 				
 				// determine which view we are using, calculate our value
 				// set our appropriate icon, then add it to the array to update the DOM
 				if (self.selectedView() == "degrees") {
 					var value = self.convertToDegrees(data.values[i]);
-					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
-
+					self.updateBedValueDirection(i, value);
 					newBedValues.push(Math.abs(value)  + '°');
 				}
 				else if (self.selectedView() == "decimal") {
 					
 					var value = self.convertToDecimalTurns(data.values[i]);
-					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
+					self.updateBedValueDirection(i, value);
 					newBedValues.push(Math.abs(value));
 				}
 				else if (self.selectedView() == "fraction") {
 					var value = self.convertToDecimalTurns(data.values[i]);
-					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
+					self.updateBedValueDirection(i, value);
 					var fraction = decimalToFraction(value);
 					newBedValues.push(Math.abs(fraction.top) + '/' + fraction.bottom);
 				}
 				else {
-					$('.bedvalue-' + i + '-direction').addClass((value < 0) ? 'fa-undo' : 'fa-repeat');
 					newBedValues.push(data.values[i]);
 				}
 				

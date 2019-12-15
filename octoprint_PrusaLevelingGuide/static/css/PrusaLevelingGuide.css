@@ -13,6 +13,7 @@
 }
 #tab_plugin_PrusaLevelingGuide #tableView .bedvalue {
   width: 60px;
+  color: black !important;
 }
 #tab_plugin_PrusaLevelingGuide #realView #photo_heatbed {
   background: url(/plugin/PrusaLevelingGuide/static/img/photo_heatbed.png);
@@ -23,6 +24,7 @@
 }
 #tab_plugin_PrusaLevelingGuide #realView .bedvalue {
   width: 50px;
+  color: black !important;
 }
 #tab_plugin_PrusaLevelingGuide #realView .bedvalue-container {
   position: relative;
