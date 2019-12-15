@@ -200,7 +200,7 @@ $(function() {
 			
 			var newBedValues = [];
 			for (i = 0; i < data.values.length; i++) {
-				$('.bedvalue-' + i).css('background-color', perc2color(Math.abs(data.values[i]), maxValue, 0));
+				$('.bedvalue-' + i).css('border', '1px solid ' + perc2color(Math.abs(data.values[i]), maxValue, 0));
 				
 				// center point, so just use 0
 				if (i == 4) {
@@ -227,7 +227,12 @@ $(function() {
 					var value = self.convertToDecimalTurns(data.values[i]);
 					self.updateBedValueDirection(i, value);
 					var fraction = decimalToFraction(value);
-					newBedValues.push(Math.abs(fraction.top) + '/' + fraction.bottom);
+					if (fraction.top == 0) {
+						newBedValues.push(0);
+					}
+					else {
+						newBedValues.push(Math.abs(fraction.top) + '/' + fraction.bottom);
+					}
 				}
 				else {
 					newBedValues.push(data.values[i]);

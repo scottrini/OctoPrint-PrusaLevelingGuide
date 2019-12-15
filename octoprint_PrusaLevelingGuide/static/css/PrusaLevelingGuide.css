@@ -1,3 +1,6 @@
+#tab_plugin_PrusaLevelingGuide i {
+  color: black !important;
+}
 #tab_plugin_PrusaLevelingGuide .variance_container {
   float: right;
   text-align: center;
