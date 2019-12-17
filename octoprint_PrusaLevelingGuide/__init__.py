@@ -22,27 +22,14 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 		self.bed_variance = None
 		self.relative_values = []
 		self.last_result = None
+		self.regex = re.compile(r"^(  -?\d+.\d+)+$")
+		self.waiting_for_response = False
+		self.sent_time = False
 		
 		
 
 	
 	##~~ SimpleApiPlugin mixin
-	def get_api_commands(self):
-		return dict(
-			get_bed_values=[]
-		)
-
-        
-	def on_api_command(self, command, data):
-		import flask
-		if command == "command1":
-			parameter = "unset"
-		if "parameter" in data:
-			parameter = "set"
-			self._logger.info("command1 called, parameter is {parameter}".format(**locals()))
-		elif command == "command2":
-			self._logger.info("command2 called, some_parameter is {some_parameter}".format(**data))
-
 	def on_api_get(self, request):
 		return flask.jsonify(bed_variance=self.bed_variance,
 							values=self.relative_values,
@@ -78,7 +65,7 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 		# Plugin here. See https://github.com/foosel/OctoPrint/wiki/Plugin:-Software-Update
 		# for details.
 		return dict(
-			levelingguide=dict(
+			PrusaLevelingGuide=dict(
 				displayName="Prusa Leveling Guide Plugin",
 				displayVersion=self._plugin_version,
 
@@ -98,9 +85,6 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 	mesh_level_responses = []
 	
 	def mesh_level_generate(self):
-		self._logger.info("number mesh responses" + str(len(self.mesh_level_responses)))
-		
-		self._logger.info("Generating mesh points")
 		
 		mesh_values = []
 		
@@ -111,9 +95,7 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 				mesh_values.append(float(i))
 		
 		self.bed_variance = round(max(mesh_values) - min(mesh_values), 3)
-		
-		self._logger.info("Bed variance: " + str(self.bed_variance))
-		
+
 		center = mesh_values[24]
 		
 		self.relative_values = [round(mesh_values[x] - center, 2) for x in [0,3,6,21,24,27,42,45,48]]
@@ -121,13 +103,22 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 		del self.mesh_level_responses[:]
 		
 		
-		
-	
+
+	def check_for_mesh_response(self, comm_instance, phase, cmd, cmd_type, gcode, subcode=None, tags=None, *args, **kwargs):
+		if gcode == "G81":
+			self.waiting_for_response = True
+			self.sent_time = time.time()
+
 	def mesh_level_check(self, comm, line, *args, **kwargs):
-		if re.match(r"^(  -?\d+.\d+)+$", line):
+		if not self.waiting_for_response == True:
+			return line
+		
+		if (time.time() - self.sent_time) > 100:
+			self.waiting_for_response = False
+			return line
+
+		if self.regex.match(line):
 			self.mesh_level_responses.append(line)
-			self._logger.info("FOUND: " + line)
-			self._logger.info("number mesh responses" + str(len(self.mesh_level_responses)))
 			if len(self.mesh_level_responses) == 7:
 				self.mesh_level_generate()
 		return line
@@ -143,6 +134,7 @@ def __plugin_load__():
 	global __plugin_hooks__
 	__plugin_hooks__ = {
 		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-                "octoprint.comm.protocol.gcode.received": __plugin_implementation__.mesh_level_check
+                "octoprint.comm.protocol.gcode.received": __plugin_implementation__.mesh_level_check,
+                "octoprint.comm.protocol.gcode.sent": __plugin_implementation__.check_for_mesh_response
 	}
 
