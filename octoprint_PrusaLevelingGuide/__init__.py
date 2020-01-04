@@ -40,6 +40,7 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 	def get_settings_defaults(self):
 		return dict(
 			mesh_gcode = 'G28 W ; home all without mesh bed level\nM400\nG80 N3; mesh bed leveling\nG81 ; check mesh leveling results',
+			move_gcode = 'G1 Z60 Y210 F6000',
 			enable_preheat = True,
 			selected_profile = "",
 			selected_view = "raw",

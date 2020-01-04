@@ -10,4 +10,10 @@
             <textarea rows="4" class="block" data-bind="value: settingsViewModel.settings.plugins.PrusaLevelingGuide.mesh_gcode"></textarea>
         </div>
     </div>
+    <div class="control-group">
+        <label class="control-label">Move gcode <small>(gcode used to move extruder and bed out of the way between adjustments)</small></label>
+        <div class="controls">
+            <input type="text" class="block" data-bind="value: settingsViewModel.settings.plugins.PrusaLevelingGuide.move_gcode" />
+        </div>
+    </div>
 </form>

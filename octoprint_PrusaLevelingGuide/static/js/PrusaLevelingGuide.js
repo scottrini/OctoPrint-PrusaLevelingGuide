@@ -277,7 +277,7 @@ $(function() {
 			    		self.currentStatus('Waiting for continue');
 			    		
 						// move the extruder out of the way to make adjustments
-						OctoPrint.control.sendGcode("G1 X30.000 Y200.000 Z100.000");
+						OctoPrint.control.sendGcode(self.currentSettings.move_gcode());
 						self.isPaused(true);
 						
 						// We should always have a timer handle, but we'll check to be safe
