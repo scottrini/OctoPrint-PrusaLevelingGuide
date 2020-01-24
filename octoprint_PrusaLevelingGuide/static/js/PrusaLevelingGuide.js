@@ -188,7 +188,7 @@ $(function() {
 			}
 			
 			self.bedVariance(data.bed_variance);
-			$('.variance strong').css('background-color', perc2color(1 - data.bed_variance, 0, 1.5));
+			$('.variance strong').css('border-color', perc2color(1 - data.bed_variance, 0, 1.5));
 
 			
 			var maxValue = 0;
@@ -214,18 +214,14 @@ $(function() {
 				// set our appropriate icon, then add it to the array to update the DOM
 				if (self.selectedView() == "degrees") {
 					var value = self.convertToDegrees(data.values[i]);
-					self.updateBedValueDirection(i, value);
 					newBedValues.push(Math.abs(value)  + '°');
 				}
 				else if (self.selectedView() == "decimal") {
-					
 					var value = self.convertToDecimalTurns(data.values[i]);
-					self.updateBedValueDirection(i, value);
 					newBedValues.push(Math.abs(value));
 				}
 				else if (self.selectedView() == "fraction") {
 					var value = self.convertToDecimalTurns(data.values[i]);
-					self.updateBedValueDirection(i, value);
 					var fraction = decimalToFraction(value);
 					if (fraction.top == 0) {
 						newBedValues.push(0);
@@ -237,6 +233,7 @@ $(function() {
 				else {
 					newBedValues.push(data.values[i]);
 				}
+				self.updateBedValueDirection(i, data.values[i]);
 				
 				
 			}
@@ -290,7 +287,7 @@ $(function() {
 			    		self.routeData(response);
 			    	}
 			    });
-        	}, 5000); // Check every 5 seconds
+        	}, 2000); // Check every 2 seconds
         }
         
         // This is called when the user clicks finished and finishes up the adjustment proocess
