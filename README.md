@@ -57,3 +57,9 @@ So select your profile and whether to preheat, then click begin adjusting.  The 
 Once the UI is updated, the status will change to *Waiting for continue*.  This is your opportunity to adjust the screws.  The raw value view does not provide the direction to turn the screws.  If it's a negative value, loosen the screw.  If it's positive, tighten the screw.
 
 All of the other views will disable an arrow next to the value to show which direction to rotate the screw.  Once you've made your adjustments, click continue to start another mesh check and update the UI with the new values.  If you've gotten your bed to a variance you're happy with, click **Finished**.  If the printer was preheated, this will disable the preheating.
+
+## Z Calibration can effect bed leveling
+
+Note from *Spacemarine2018*
+
+If you re-calibrate your Z-axis after leveling your bed, it might look like the whole left or right side of the bed is suddenly higer/lower than the other side. The reason for this is, that the Z-axis leadscrews might have changed their angular position relative to each other due to soft mechanical upper stops. If this is the case, try to rotate one of the leadscrews by hand by one or two clicks instead of re-adjusting the bed again.
