@@ -118,7 +118,7 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 			self.waiting_for_response = False
 			return line
 
-		if self.regex.match(line):
+		if self.regex.match(line.rstrip()):
 			self.mesh_level_responses.append(line)
 			if len(self.mesh_level_responses) == 7:
 				self.mesh_level_generate()
