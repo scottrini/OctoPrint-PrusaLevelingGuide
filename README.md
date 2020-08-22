@@ -1,5 +1,9 @@
 # OctoPrint-PrusaLevelingGuide
 
+## Guide
+
+[Nylock Mod for the MK3S](https://www.rearvuemirror.com/guides/nylock-mod-for-the-mk3s) is an excellent guide written to explain how to apply the nylock mod, but also references this plugin for making adjustments.  I recommend following this guide if you're new to the nylock mod.
+
 **Start here**
 [Bed Leveling without Wave Springs](https://github.com/PrusaOwners/prusaowners/wiki/Bed_Leveling_without_Wave_Springs)
 

@@ -13,9 +13,9 @@ import flask
 
 class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 							octoprint.plugin.SettingsPlugin,
-                          octoprint.plugin.AssetPlugin,
-                          octoprint.plugin.TemplatePlugin,
-                          octoprint.plugin.StartupPlugin):
+							octoprint.plugin.AssetPlugin,
+							octoprint.plugin.TemplatePlugin,
+							octoprint.plugin.StartupPlugin):
 	
 	
 	def on_after_startup(self):
@@ -25,10 +25,8 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 		self.regex = re.compile(r"^(  -?\d+.\d+)+$")
 		self.waiting_for_response = False
 		self.sent_time = False
-		
-		
 
-	
+
 	##~~ SimpleApiPlugin mixin
 	def on_api_get(self, request):
 		return flask.jsonify(bed_variance=self.bed_variance,
@@ -84,6 +82,12 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 	##~~ GCode Received hook
 	
 	mesh_level_responses = []
+	bed_variance = None
+	relative_values = []
+	last_result = None
+	regex = re.compile(r"^(  -?\d+.\d+)+$")
+	waiting_for_response = False
+	sent_time = False
 	
 	def mesh_level_generate(self):
 		
@@ -136,7 +140,7 @@ def __plugin_load__():
 	global __plugin_hooks__
 	__plugin_hooks__ = {
 		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-                "octoprint.comm.protocol.gcode.received": __plugin_implementation__.mesh_level_check,
-                "octoprint.comm.protocol.gcode.sent": __plugin_implementation__.check_for_mesh_response
+				"octoprint.comm.protocol.gcode.received": __plugin_implementation__.mesh_level_check,
+				"octoprint.comm.protocol.gcode.sent": __plugin_implementation__.check_for_mesh_response
 	}
 
