@@ -214,15 +214,15 @@ $(function() {
 				// set our appropriate icon, then add it to the array to update the DOM
 				if (self.selectedView() == "degrees") {
 					var value = self.convertToDegrees(data.values[i]);
-					newBedValues.push(Math.abs(value)  + '°');
+					newBedValues.push(Math.abs(value.toFixed(2))  + '°');
 				}
 				else if (self.selectedView() == "decimal") {
 					var value = self.convertToDecimalTurns(data.values[i]);
-					newBedValues.push(Math.abs(value));
+					newBedValues.push(Math.abs(value.toFixed(2)));
 				}
 				else if (self.selectedView() == "fraction") {
 					var value = self.convertToDecimalTurns(data.values[i]);
-					var fraction = decimalToFraction(value);
+					var fraction = decimalToFraction(value.toFixed(2));
 					if (fraction.top == 0) {
 						newBedValues.push(0);
 					}
