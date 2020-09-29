@@ -213,7 +213,7 @@ $(function() {
 				// determine which view we are using, calculate our value
 				// set our appropriate icon, then add it to the array to update the DOM
 				if (self.selectedView() == "degrees") {
-					var value = self.convertToDegrees(data.values[i]);
+					var value = self.convertToDegrees(parseFloat(data.values[i]).toFixed(2));
 					newBedValues.push(Math.abs(value)  + '°');
 				}
 				else if (self.selectedView() == "decimal") {
