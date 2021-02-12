@@ -25,7 +25,7 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 		self.bed_variance = None
 		self.relative_values = []
 		self.last_result = None
-		self.regex = regex.compile(r"^(?<values> +-?\d+\.\d+){7}$|^ \d(?<values> +[+-]?\d+\.\d+){2,}$")
+		self.regex = regex.compile(r"^(?<prusa> +-?\d+\.\d+){7}$|^ \d(?<marlin> +[+-]?\d+\.\d+){2,}$")
 		self.waiting_for_response = False
 		self.sent_time = False
 
@@ -86,9 +86,8 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 
 		self.bed_variance = round(values.max() - values.min(), 3)
 
-		ix = np.linspace(-1, 1, len(values))
-		interpolator = RectBivariateSpline(ix, ix, values)
-		values = interpolator([-1,0,1], [-1,0,1])
+		iv = np.linspace(-1, 1, len(values))
+		values = RectBivariateSpline(iv, iv, values)([-1,0,1], [-1,0,1])
 		center = values[1][1]
 
 		self.relative_values = np.around(values - center, 3).flatten().tolist()
@@ -110,14 +109,19 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 			self.waiting_for_response = False
 			return line
 
-		m = self.regex.match(line.rstrip())
-		if m:
-			values = [float(value) for value in m.captures("values")]
-			if len(values) > 1:
-				self.mesh_values.append(values)
-				if len(self.mesh_values) == len(values):
-					self.waiting_for_response = False
-					self.mesh_level_generate()
+		match = self.regex.match(line.rstrip())
+		if match:
+			match = match.capturesdict()
+
+			if match['prusa']:
+				self.mesh_values.append([float(value) for value in match['prusa']])
+			elif match['marlin']:
+				self.mesh_values.insert(0, [float(value) for value in match['marlin']])
+
+			if len(self.mesh_values) == len(self.mesh_values[0]):
+				self.waiting_for_response = False
+				self.mesh_level_generate()
+
 		return line
 	
 			
