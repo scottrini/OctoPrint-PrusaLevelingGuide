@@ -90,7 +90,7 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 		values = RectBivariateSpline(iv, iv, values)([-1,0,1], [-1,0,1])
 		center = values[1][1]
 
-		self.relative_values = np.around(values - center, 3).flatten().tolist()
+		self.relative_values = (values - center).flatten().tolist()
 		self.last_result = time.mktime(datetime.datetime.now().timetuple())			
 
 	##~~ GCode Sent hook
