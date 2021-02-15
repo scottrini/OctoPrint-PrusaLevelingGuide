@@ -7,6 +7,15 @@
 **Start here**
 [Bed Leveling without Wave Springs](https://github.com/PrusaOwners/prusaowners/wiki/Bed_Leveling_without_Wave_Springs)
 
+**Dependencies**
+* [scipy](https://www.scipy.org/)
+* [numpy](https://numpy.org/)
+
+**Issues?**
+If installing the plugin, Octoprint displays the plugin as "Unknown" or errors are popping up in the logs, you might need to SSH in and install a dependency.  You can accomplish this by running
+
+`sudo apt-get install libatlas-base-dev`
+
 **IMPORTANT:** The guide mentions a firmware modification for modifying the G81 response to use relative values.  This plugin only works if you **do not** use this modification.  This plugin will calculate the relative values for you.
 
 This plugin is to help guide you through the fine adjustments of the nylock bed leveling method for Prusa MK3 printers, which is described in the above guide.  Make sure you start there and already have the nylocks applied to your bed before beginning.  This plugin allows you to select a profile for preheating, then begin adjustment.  For each round of adjustment, the plugin will send the configured mesh level code and gcode for retrieving values (generally G80; G81).  Once values are received, you can view how to adjust your bed in a number of ways.  You click continue to proceed with another round of leveling or click finish to finish up.
