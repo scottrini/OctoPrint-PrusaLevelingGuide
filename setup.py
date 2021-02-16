@@ -14,7 +14,7 @@ plugin_package = "octoprint_PrusaLevelingGuide"
 plugin_name = "OctoPrint-PrusaLevelingGuide"
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
-plugin_version = "1.0.13"
+plugin_version = "1.0.14"
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
@@ -33,7 +33,7 @@ plugin_url = "https://github.com/scottrini/OctoPrint-PrusaLevelingguide"
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ['regex', 'numpy', 'scipy']
+plugin_requires = ['regex', 'numpy==1.16.6', 'scipy==1.2.3']
 
 ### --------------------------------------------------------------------------------------------------------------------
 ### More advanced options that you usually shouldn't have to touch follow after this point
