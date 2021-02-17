@@ -33,7 +33,7 @@ plugin_url = "https://github.com/scottrini/OctoPrint-PrusaLevelingguide"
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ['regex', 'numpy==1.16.6', 'scipy==1.2.3']
+plugin_requires = ['regex', 'numpy~=1.20.0', 'scipy~=1.6.0']
 
 ### --------------------------------------------------------------------------------------------------------------------
 ### More advanced options that you usually shouldn't have to touch follow after this point
