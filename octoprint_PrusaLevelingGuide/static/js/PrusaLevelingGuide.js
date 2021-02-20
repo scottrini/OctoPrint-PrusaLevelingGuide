@@ -9,6 +9,7 @@ function gcd(a, b) {
 	return (b) ? gcd(b, a % b) : a;
 }
 var decimalToFraction = function (_decimal) {
+	_decimal = _decimal.toFixed(2);
 	if (_decimal == parseInt(_decimal)) {
 		return {
 			top: parseInt(_decimal),
@@ -160,12 +161,12 @@ $(function() {
 		}
  
  		self.convertToDecimalTurns = function (value) {
- 			var turns = (value / 0.5).toFixed(2);
+ 			var turns = (value / 0.5);
  			return  turns;
  		}
  		
 		self.convertToDegrees = function (value) {
-			var degrees = ((value / 0.5) * 360).toFixed(1);
+			var degrees = ((value / 0.5) * 360);
 			return degrees;
 		}
 		
@@ -213,16 +214,16 @@ $(function() {
 				// determine which view we are using, calculate our value
 				// set our appropriate icon, then add it to the array to update the DOM
 				if (self.selectedView() == "degrees") {
-					var value = self.convertToDegrees(parseFloat(data.values[i]).toFixed(2));
-					newBedValues.push(Math.abs(value)  + '°');
+					var value = self.convertToDegrees(data.values[i]);
+					newBedValues.push(Math.abs(value).toFixed(1)  + '°');
 				}
 				else if (self.selectedView() == "decimal") {
 					var value = self.convertToDecimalTurns(data.values[i]);
-					newBedValues.push(Math.abs(value));
+					newBedValues.push(Math.abs(value).toFixed(3));
 				}
 				else if (self.selectedView() == "fraction") {
 					var value = self.convertToDecimalTurns(data.values[i]);
-					var fraction = decimalToFraction(parseFloat(value).toFixed(2));
+					var fraction = decimalToFraction(value);
 					if (fraction.top == 0) {
 						newBedValues.push(0);
 					}

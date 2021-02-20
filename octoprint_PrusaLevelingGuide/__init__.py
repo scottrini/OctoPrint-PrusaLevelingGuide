@@ -19,6 +19,7 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 	
 	
 	def on_after_startup(self):
+		self.mesh_values = []
 		self.bed_variance = None
 		self.relative_values = []
 		self.last_result = None
@@ -110,12 +111,13 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 		
 
 	def check_for_mesh_response(self, comm_instance, phase, cmd, cmd_type, gcode, subcode=None, tags=None, *args, **kwargs):
-		if gcode == "G81":
+		if gcode == "G81" or gcode == "G29":
 			self.waiting_for_response = True
 			self.sent_time = time.time()
+			del self.mesh_values[:]
 
 	def mesh_level_check(self, comm, line, *args, **kwargs):
-		if not self.waiting_for_response == True:
+		if not hasattr(self, 'waiting_for_response') or not self.waiting_for_response == True:
 			return line
 		
 		if (time.time() - self.sent_time) > 100:
