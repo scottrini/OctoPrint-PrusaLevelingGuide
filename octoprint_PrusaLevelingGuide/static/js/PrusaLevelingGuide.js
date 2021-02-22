@@ -139,6 +139,8 @@ $(function() {
 		self.currentStatus = ko.observable('Idle');
 		self.viewType = ko.observable('table');
 		self.selectedView = ko.observable();
+		self.bedTemperature = ko.observable('');
+		self.nozzleTemperature = ko.observable('');
 		
 		
 		// Data from MT
@@ -190,9 +192,6 @@ $(function() {
 			if (self.currentSettings.enable_preheat_nozzle) {
 				self.enablePreheatNozzle(self.currentSettings.enable_preheat_nozzle());
 			}
-			if (self.currentSettings.selected_profile) {
-				self.selectedProfile(self.currentSettings.selected_profile());
-			}
 			if (self.currentSettings.selected_view) {
 				self.selectedView(self.currentSettings.selected_view());
 			}
@@ -215,8 +214,22 @@ $(function() {
 			});
 			
 			self.selectedProfile.subscribe(function (newValue) {
+				
+				var profile = self.availableProfiles().filter(function (obj) {
+					return obj.name == self.selectedProfile()
+				});
+
+				if (profile.length) {
+					profile = profile[0];
+					self.bedTemperature(profile.bed);
+					self.nozzleTemperature(profile.extruder);
+				}
+
 				self.currentSettings.selected_profile(newValue);
 			});
+			if (self.currentSettings.selected_profile) {
+				self.selectedProfile(self.currentSettings.selected_profile());
+			}
 			
 			self.selectedView.subscribe(function (newValue) {
 				self.currentSettings.selected_view(newValue);
@@ -350,7 +363,7 @@ $(function() {
 				self.ctx.stroke();
 			
 				self.ctx.fillStyle = "white";
-				self.ctx.strokeStyle = valueColor;
+				self.ctx.strokeStyle = "grey";
 				self.ctx.strokeText(newBedValues[i], location.x, location.y);
 				self.ctx.fillText(newBedValues[i], location.x, location.y);
 

@@ -23,10 +23,10 @@
 	    </div>
 		<div class="controls">
 			<label class="checkbox">
-				<input type="checkbox" data-bind="checked: enablePreheatNozzle, enable: $root.enablePreheat() && !$root.isRunning()" /> Preheat Nozzle
+				<input type="checkbox" data-bind="checked: enablePreheatNozzle, enable: $root.enablePreheat() && !$root.isRunning()" /> Nozzle (<span data-bind="text: nozzleTemperature"></span>)
 			</label>
 			<label class="checkbox">
-				<input type="checkbox" data-bind="checked: enablePreheatBed, enable: $root.enablePreheat() && !$root.isRunning()" /> Preheat Bed
+				<input type="checkbox" data-bind="checked: enablePreheatBed, enable: $root.enablePreheat() && !$root.isRunning()" /> Bed (<span data-bind="text: bedTemperature"></span>)
 			</label>
 		 </div>
 	</div>
