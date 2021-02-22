@@ -21,6 +21,14 @@
 	               		optionsValue: function (item) { return item.name },
 	                   value: selectedProfile"></select>
 	    </div>
+		<div class="controls">
+			<label class="checkbox">
+				<input type="checkbox" data-bind="checked: enablePreheatNozzle, enable: $root.enablePreheat() && !$root.isRunning()" /> Preheat Nozzle
+			</label>
+			<label class="checkbox">
+				<input type="checkbox" data-bind="checked: enablePreheatBed, enable: $root.enablePreheat() && !$root.isRunning()" /> Preheat Bed
+			</label>
+		 </div>
 	</div>
 	
 	<button class="btn btn-block control-box" data-bind="enable: controlViewModel.isOperational() && !controlViewModel.isPrinting() && loginStateViewModel.isUser() && !$root.isRunning(), click: function() { $root.beginAdjustment() }">Begin Adjusting</button>
@@ -30,6 +38,7 @@
 	  <div class="btn-group"> 
 	    <a class="btn" data-bind="click: $root.switchToTable(), css: { 'btn-primary': viewType() == 'table' }"><i class="fa fa-table"></i></a>
 	    <a class="btn" data-bind="click: $root.switchToReal(), css: { 'btn-primary': viewType() == 'real' }"><i class="fa fa-bed"></i></a>
+		<a class="btn" data-bind="click: $root.switchToBed(), css: { 'btn-primary': viewType() == 'bed' }"><i class="fa fa-bed"></i> Beta</a>
 	  </div>
 	</div>
 	<div class="btn-toolbar pull-right">
@@ -155,6 +164,10 @@
 		    </div>
 			
 		</div>
+	</div>
+
+	<div id="newBedView" data-bind="visible: viewType() == 'bed'">
+		<canvas id="PrusaLevelingGuide-bedLayout" width="590" height="455"></canvas>
 	</div>
 	
 

@@ -5,6 +5,65 @@
  * License: AGPLv3
  */
 
+
+const ICONS = {
+	center: "\uf140",
+	tighten: "\uf01e",
+	loosen: "\uf0e2"
+};
+
+const dimensions = {
+	x: 590,
+	y: 455
+};
+
+const canvasLocations = [
+	// upper left
+	{
+		x: 70,
+		y: 65
+	},
+	// upper center
+	{
+		x: 250,
+		y: 65
+	},
+	// upper right
+	{
+		x: 440,
+		y: 65
+	},
+	// middle left
+	{
+		x: 65,
+		y: 230
+	},
+	// center
+	{
+		x: 250,
+		y: 230
+	},
+	// middle right
+	{
+		x: 440,
+		y: 230
+	},
+	// bottom left
+	{
+		x: 50,
+		y: 400
+	},
+	// bottom center
+	{
+		x: 250,
+		y: 400
+	},
+	// bottom right
+	{
+		x: 440,
+		y: 400
+	}
+];
 function gcd(a, b) {
 	return (b) ? gcd(b, a % b) : a;
 }
@@ -73,6 +132,8 @@ $(function() {
 		
 		// settings and DOM data
 		self.enablePreheat = ko.observable(true);
+		self.enablePreheatNozzle = ko.observable(true);
+		self.enablePreheatBed = ko.observable(true);
 		self.selectedProfile = ko.observable();
 		self.availableProfiles = ko.observableArray([]);
 		self.currentStatus = ko.observable('Idle');
@@ -84,6 +145,7 @@ $(function() {
 		self.routeData = {};
 		self.bedVariance = ko.observable();
 		self.lastUpdated = ko.observable();
+		self.maxValue = null;
 		self.bedValues = ko.observableArray([]);
 		
 		// JS helpers
@@ -96,8 +158,21 @@ $(function() {
 		self.switchToReal = function () {
 			self.viewType("real");
 		}
+
+		self.switchToBed = function () {
+			self.viewType("bed");
+		}
 		// initialization
 		self.onStartupComplete = function () {
+
+			self.heatbedImage = new Image();
+			self.heatbedImage.onload = () => {
+				self.ctx.clearRect(0, 0, dimensions.x, dimensions.y);
+				// draw the heatbed image
+				self.ctx.drawImage(self.heatbedImage, 50, 0);
+			};
+			self.heatbedImage.src = '/plugin/PrusaLevelingGuide/static/img/photo_heatbed.png';
+
 			// populate available profiles in dropdown
 			self.availableProfiles(self.settingsViewModel.temperature_profiles());
 
@@ -108,6 +183,12 @@ $(function() {
 			// if we have stored preheat settings or selected profile, select them in the DOM
 			if (self.currentSettings.enable_preheat) {
 				self.enablePreheat(self.currentSettings.enable_preheat());
+			}
+			if (self.currentSettings.enable_preheat_bed) {
+				self.enablePreheatBed(self.currentSettings.enable_preheat_bed());
+			}
+			if (self.currentSettings.enable_preheat_nozzle) {
+				self.enablePreheatNozzle(self.currentSettings.enable_preheat_nozzle());
 			}
 			if (self.currentSettings.selected_profile) {
 				self.selectedProfile(self.currentSettings.selected_profile());
@@ -123,6 +204,14 @@ $(function() {
 			// subscribe to observables to save the new values
 			self.enablePreheat.subscribe(function (newValue) {
 				self.currentSettings.enable_preheat(self.enablePreheat());
+			});
+
+			self.enablePreheatNozzle.subscribe(function (newValue) {
+				self.currentSettings.enable_preheat_nozzle(self.enablePreheatNozzle());
+			});
+
+			self.enablePreheatBed.subscribe(function (newValue) {
+				self.currentSettings.enable_preheat_bed(self.enablePreheatBed());
 			});
 			
 			self.selectedProfile.subscribe(function (newValue) {
@@ -158,6 +247,10 @@ $(function() {
 					// subscribe to the observable to populate values on the DOM
 					self.routeData.subscribe(self.updateBedValues);
 				});
+
+			self.canvas = document.getElementById("PrusaLevelingGuide-bedLayout");
+			self.ctx = self.canvas.getContext("2d");
+			self.ctx.font = '900 18px "Font Awesome 5 Free"';
 		}
  
  		self.convertToDecimalTurns = function (value) {
@@ -181,9 +274,9 @@ $(function() {
 
 		// Update the DOM with bed values from the API
 		self.updateBedValues = function () {
-			
 			var data = self.routeData();
-			
+
+
 			if (!data.values.length) {
 				return;
 			}
@@ -192,7 +285,7 @@ $(function() {
 			$('.variance strong').css('border-color', perc2color(1 - data.bed_variance, 0, 1.5));
 
 			
-			var maxValue = 0;
+			let maxValue = 0;
 			for (i = 0; i < data.values.length; i++) {
 				if (Math.abs(data.values[i]) > maxValue) {
 					maxValue = Math.abs(data.values[i]);
@@ -201,7 +294,8 @@ $(function() {
 			
 			var newBedValues = [];
 			for (i = 0; i < data.values.length; i++) {
-				$('.bedvalue-' + i).css('border', '1px solid ' + perc2color(Math.abs(data.values[i]), maxValue, 0));
+				let valueColor = perc2color(Math.abs(data.values[i]), maxValue, 0);
+				$('.bedvalue-' + i).css('border', '1px solid ' + valueColor);
 				
 				// center point, so just use 0
 				if (i == 4) {
@@ -232,17 +326,52 @@ $(function() {
 					}
 				}
 				else {
-					newBedValues.push(data.values[i]);
+					newBedValues.push(data.values[i].toFixed(5));
 				}
+
 				self.updateBedValueDirection(i, data.values[i]);
 				
 				
 			}
+
+			// draw the value to the canvas
+			// trigger onload of heatbedimage to clear the canvas and repaint the image
+			self.heatbedImage.dispatchEvent(new Event('load'));
+			canvasLocations.forEach((location, i) => {
+				let valueColor = perc2color(Math.abs(data.values[i]), maxValue, 0);
+				self.ctx.beginPath();
+				self.ctx.fillStyle = "black";
+				// rectangle background
+
+				self.ctx.strokeStyle = "white";
+				self.ctx.fillRect(location.x - 5, location.y - 20, 100, 25);
+				// rectangle border
+				self.ctx.rect(location.x - 5, location.y - 20, 100, 25);
+				self.ctx.stroke();
+			
+				self.ctx.fillStyle = "white";
+				self.ctx.strokeStyle = valueColor;
+				self.ctx.strokeText(newBedValues[i], location.x, location.y);
+				self.ctx.fillText(newBedValues[i], location.x, location.y);
+
+				let text = "";
+
+				if (data.values[i] == 0) {
+					text = ICONS.center;
+				}
+				else {
+					text = (data.values[i] < 0) ? ICONS.loosen : ICONS.tighten;
+				}
+				self.ctx.fillText(text, location.x + 75, location.y);
+				self.ctx.strokeStyle = valueColor;
+				self.ctx.stroke();
+			});
 			
 			self.bedValues(newBedValues);
 			var d = new Date(data.last_result * 1000);
 			
 			self.lastUpdated(d.toLocaleString());
+
 		}
 		
 		self.refreshFromAPI = function () {
@@ -272,7 +401,7 @@ $(function() {
 					
 					if (self.routeData().last_result != response.last_result) {
 						// If we actually have new data, we are waiting to continue adjustment
-						self.currentStatus('Waiting for continue');
+						self.currentStatus('Results received; make adjustments now.  When ready, click continue below.');
 						
 						// move the extruder out of the way to make adjustments
 						OctoPrint.control.sendGcode(self.currentSettings.move_gcode());
@@ -313,6 +442,12 @@ $(function() {
 			// If we should prehead
 			if (self.enablePreheat()) {
 
+				if (!self.enablePreheatBed() && !self.enablePreheatNozzle()) {
+					self.isRunning(false);
+					self.currentStatus('Preheating selected, but preheating nozzle and bed disabled');
+					return;
+				}
+
 				// Filter the available temperature profiles and find the selected one
 				var profile = self.availableProfiles().filter(function (obj) {
 					return obj.name == self.selectedProfile()
@@ -330,8 +465,13 @@ $(function() {
 				}
 				
 				// Set the bed and extruder temperatures from the profile
-				self.temperatureViewModel.setTargetFromProfile(self.temperatureViewModel.tools()[0], profile);
-				self.temperatureViewModel.setTargetFromProfile(self.temperatureViewModel.bedTemp, profile);
+
+				if (self.enablePreheatNozzle()) {
+					self.temperatureViewModel.setTargetFromProfile(self.temperatureViewModel.tools()[0], profile);
+				}
+				if (self.enablePreheatBed()) {
+					self.temperatureViewModel.setTargetFromProfile(self.temperatureViewModel.bedTemp, profile);
+				}
 				
 				self.currentStatus('Preheating');
 				// check if we are preheated
@@ -339,8 +479,9 @@ $(function() {
 				// Set a timer to check for being done preheating
 				var timer = setInterval(function () {
 					// Check if we're preheated
-					if (self.temperatureViewModel.tools()[0].actual() >= profile.extruder &&
-						self.temperatureViewModel.bedTemp.actual() >= profile.bed) {
+
+					if ((!self.enablePreheatNozzle() || self.temperatureViewModel.tools()[0].actual() >= profile.extruder) &&
+						(!self.enablePreheatBed() || self.temperatureViewModel.bedTemp.actual() >= profile.bed)) {
 							// we are preheated!
 							self.sendLevelCommand();
 							clearInterval(timer);
