@@ -173,7 +173,7 @@ $(function() {
 				// draw the heatbed image
 				self.ctx.drawImage(self.heatbedImage, 50, 0);
 			};
-			self.heatbedImage.src = '/plugin/PrusaLevelingGuide/static/img/photo_heatbed.png';
+			self.heatbedImage.src = 'plugin/PrusaLevelingGuide/static/img/photo_heatbed.png';
 
 			// populate available profiles in dropdown
 			self.availableProfiles(self.settingsViewModel.temperature_profiles());
@@ -228,7 +228,12 @@ $(function() {
 				self.currentSettings.selected_profile(newValue);
 			});
 			if (self.currentSettings.selected_profile) {
+				self.selectedProfile("");
 				self.selectedProfile(self.currentSettings.selected_profile());
+			}
+			else if (self.availableProfiles().length) {
+				self.selectedProfile("");
+				self.selectedProfile(self.availableProfiles()[0].name);
 			}
 			
 			self.selectedView.subscribe(function (newValue) {

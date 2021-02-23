@@ -26,6 +26,12 @@ The profiles listed for preheating are the temperature profiles defined in octop
 
 ![Temperature Settings](preheat.png)
 
+## 7x7 vs 3x3 for adjustments
+
+Previously, this plugin used `G80 N3` to enforce using 3x3 bed leveling in the default gcode.  Without the `N3`, it would use whatever you have configured in the firmware.  The `N3` is no longer in the default settings, but you might still have it configured if you've updated from a previous version.  If you'd like to use what is configured on your printer, make sure the `N3` is *not* present in your settings.
+
+![Mesh gcode settings](mesh_settings.png)
+
 ## Adjusting your bed
 
 Once you're ready to adjust using this plugin, pull up the tab in your octoprint instance.  Decide if you want to preheat the bed while making adjustments.  Preheating isn't absolutely necessary for your initial adjustments, but really fine tuning the bed should be done preheated, as the values will change when things are heated.
@@ -45,12 +51,20 @@ All of the other views will disable an arrow next to the value to show which dir
 
 You have the option of viewing the values in a table view or overlayed on a photo of the heatbed.  You can also customize whether you view raw values, degrees, decimal turns, or factional turns.
 
+**Configuration View**
+![Config View](config.png)
+
+**Beta Bed View**
+![Beda view](bed.png)
+
+**Bed View**
+![Bed view](bed_old.png)
+
 **Table View**
 ![Table view](table.png)
 
 
-**Bed View**
-![Bed view](bed.png)
+
 
 ## Configuration
 

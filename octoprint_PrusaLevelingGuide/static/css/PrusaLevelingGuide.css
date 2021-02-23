@@ -22,7 +22,7 @@
   color: black !important;
 }
 #tab_plugin_PrusaLevelingGuide #realView #photo_heatbed {
-  background: url(/plugin/PrusaLevelingGuide/static/img/photo_heatbed.png);
+  background: url(../img/photo_heatbed.png);
   background-repeat: no-repeat;
   height: 455px;
   padding-bottom: 15px;
