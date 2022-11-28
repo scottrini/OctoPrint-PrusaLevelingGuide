@@ -102,12 +102,14 @@ class PrusaLevelingGuidePlugin(octoprint.plugin.SimpleApiPlugin,
 			for i in response.split(","):
 				mesh_values.append(float(i))
 		
-		self.bed_variance = round(max(mesh_values) - min(mesh_values), 3)
+		
 
 		center = mesh_values[24]
 		
 		self.relative_values = [mesh_values[x] - center for x in [0,3,6,21,24,27,42,45,48]]
 		self.last_result = time.mktime(datetime.datetime.now().timetuple())
+
+		self.bed_variance = round(max(self.relative_values) - min(self.relative_values), 3)
 		del self.mesh_level_responses[:]
 		
 		

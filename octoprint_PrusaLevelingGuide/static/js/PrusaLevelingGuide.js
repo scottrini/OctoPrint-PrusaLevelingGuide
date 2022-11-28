@@ -157,10 +157,6 @@ $(function() {
 			self.viewType("table");
 		}
 		
-		self.switchToReal = function () {
-			self.viewType("real");
-		}
-
 		self.switchToBed = function () {
 			self.viewType("bed");
 		}
