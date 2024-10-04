@@ -1,5 +1,7 @@
 # OctoPrint-PrusaLevelingGuide
 
+This plugin is for guiding the user through fine adjustments of the bed.  Some of these mods are linked in the Guides section below.  This plugin is only intended for the Prusa MK3 and its variants (MK3, MK3S, MK3S+).  It does not support the partial upgrade MK3.5.
+
 ## Setup
 
 Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
